@@ -1,6 +1,18 @@
 import { cart, removeFromCart } from '../data/cart.js'
 import { products } from '../data/products.js'
 import { formatCurrency } from './utils/money.js'
+// Function to update the number of items in the checkout header
+function updateCheckoutHeader() {
+  let totalItems = 0
+  cart.forEach((cartItem) => {
+    totalItems += cartItem.quantity
+  })
+
+  const checkoutHeaderLink = document.querySelector('.return-to-home-link')
+  if (checkoutHeaderLink) {
+    checkoutHeaderLink.textContent = `${totalItems} items`
+  }
+}
 
 let cartSummaryHtml = ''
 cart.forEach((cartItem) => {
@@ -98,5 +110,7 @@ document.querySelectorAll('.js-delete-quantity-link').forEach((link) => {
       `.js-cart-item-container-${productId}`
     )
     container.remove()
+    updateCheckoutHeader()
   })
 })
+updateCheckoutHeader()
