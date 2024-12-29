@@ -8,7 +8,7 @@ function updateCheckoutHeader() {
     totalItems += cartItem.quantity
   })
 
-  const checkoutHeaderLink = document.querySelector('.return-to-home-link')
+  const checkoutHeaderLink = document.querySelector('.js-return-to-home-link')
   if (checkoutHeaderLink) {
     checkoutHeaderLink.textContent = `${totalItems} items`
   }
