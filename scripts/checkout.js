@@ -12,26 +12,26 @@ function updateCheckoutHeader() {
   const checkoutHeaderLink = document.querySelector('.js-return-to-home-link')
   checkoutHeaderLink.textContent = `${totalItems} items`
 }
+function renderOrderSummary() {
+  let cartSummaryHtml = ''
+  cart.forEach((cartItem) => {
+    const productId = cartItem.productId
+    const deliveryOptionId = cartItem.deliveryOptionId
+    let deliveryOption
+    deliveryOptions.forEach((option) => {
+      if (option.id === deliveryOptionId) {
+        deliveryOption = option
+      }
+    })
+    const today = dayjs()
+    const deliveryDate = today.add(deliveryOption.deliveryDays, 'days')
+    const dateString = deliveryDate.format('dddd, MMMM D')
+    products.forEach((product) => {
+      let matchingProduct
+      if (product.id === productId) {
+        matchingProduct = product
 
-let cartSummaryHtml = ''
-cart.forEach((cartItem) => {
-  const productId = cartItem.productId
-  const deliveryOptionId = cartItem.deliveryOptionId
-  let deliveryOption
-  deliveryOptions.forEach((option) => {
-    if (option.id === deliveryOptionId) {
-      deliveryOption = option
-    }
-  })
-  const today = dayjs()
-  const deliveryDate = today.add(deliveryOption.deliveryDays, 'days')
-  const dateString = deliveryDate.format('dddd, MMMM D')
-  products.forEach((product) => {
-    let matchingProduct
-    if (product.id === productId) {
-      matchingProduct = product
-
-      cartSummaryHtml += `
+        cartSummaryHtml += `
      <div class="cart-item-container js-cart-item-container-${
        matchingProduct.id
      }">
@@ -73,25 +73,35 @@ cart.forEach((cartItem) => {
               </div>
             </div>
           </div>`
-    }
+      }
+    })
   })
-})
 
-document.querySelector('.js-order-summary').innerHTML = cartSummaryHtml
+  document.querySelector('.js-order-summary').innerHTML = cartSummaryHtml
 
-document.querySelectorAll('.js-delete-quantity-link').forEach((link) => {
-  link.addEventListener('click', () => {
-    const productId = link.dataset.productId
-    removeFromCart(productId)
-    const container = document.querySelector(
-      `.js-cart-item-container-${productId}`
-    )
-    container.remove()
-    updateCheckoutHeader()
+  document.querySelectorAll('.js-delete-quantity-link').forEach((link) => {
+    link.addEventListener('click', () => {
+      const productId = link.dataset.productId
+      removeFromCart(productId)
+      const container = document.querySelector(
+        `.js-cart-item-container-${productId}`
+      )
+      container.remove()
+      updateCheckoutHeader()
+    })
   })
-})
 
-updateCheckoutHeader()
+  document.querySelectorAll('.js-delivery-option').forEach((element) => {
+    element.addEventListener('click', () => {
+      const { productId, deliveryOptionId } = element.dataset
+      updateDeliveryOption(productId, deliveryOptionId)
+      renderOrderSummary()
+    })
+  })
+
+  updateCheckoutHeader()
+}
+renderOrderSummary()
 
 function deliveryOptionsHtml(matchingProduct, cartItem) {
   let deliveryHtml = ''
@@ -124,10 +134,3 @@ function deliveryOptionsHtml(matchingProduct, cartItem) {
   })
   return deliveryHtml
 }
-
-document.querySelectorAll('.js-delivery-option').forEach((element) => {
-  element.addEventListener('click', () => {
-    const { productId, deliveryOptionId } = element.dataset
-    updateDeliveryOption(productId, deliveryOptionId)
-  })
-})
