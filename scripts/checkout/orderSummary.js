@@ -84,6 +84,7 @@ export function renderOrderSummary() {
       )
       container.remove()
       updateCheckoutHeader()
+      renderPaymentSummary()
     })
   })
 

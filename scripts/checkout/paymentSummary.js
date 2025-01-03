@@ -46,7 +46,7 @@ export function renderPaymentSummary() {
           <div class="payment-summary-row">
             <div>Estimated tax (10%):</div>
             <div class="payment-summary-money">$${(
-              priceInDollars * 0.1
+              PricePlusShipment * 0.1
             ).toFixed(2)}</div>
           </div>
 
